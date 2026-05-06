@@ -1,0 +1,169 @@
+<div class="contact-details-container">
+  @if (loading) {
+  <div class="loading-state">
+    <div class="spinner"></div>
+  </div>
+  } @else if (contact) {
+  <div class="details-content">
+    <!-- Profile Header -->
+    <div class="profile-header-horizontal">
+      <img [src]="contact.avatar" [alt]="contact.firstName" class="avatar-large" />
+      <div class="profile-info-actions">
+        <div class="profile-text">
+          <h2>{{ contact.firstName }} {{ contact.lastName }}</h2>
+          <p class="role text-secondary">{{ contact.jobTitle }}</p>
+        </div>
+        <div class="action-buttons">
+          <button class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Message
+          </button>
+          <button class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+              </path>
+            </svg>
+          </button>
+          <button class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </button>
+          <button class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="19" cy="12" r="1"></circle>
+              <circle cx="5" cy="12" r="1"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Info List -->
+    <div class="detailed-info-list">
+
+      <div class="info-row">
+        <div class="info-label text-secondary">Bio</div>
+        <div class="info-value">
+          When I first got into the advertising, I was looking for the magical combination that would put website into
+          the top search engine rankings
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-label text-secondary">Email</div>
+        <div class="info-value">
+          <div class="value-item">
+            <span>{{ contact.firstName.toLowerCase() }}.{{ contact.lastName.toLowerCase() }}@gmail.com</span>
+            <span class="pill-primary">Primary</span>
+          </div>
+          @for (email of emails; track email?.id) {
+          <div class="value-item">
+            <span>{{ email?.email }}</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-label text-secondary">Dial</div>
+        <div class="info-value">
+          <div class="value-item">
+            <span>{{ contact.firstName.charAt(0).toLowerCase() }}.{{ contact.lastName.toLowerCase()
+              }}@ymsg.com</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-label text-secondary">Meeting</div>
+        <div class="info-value">
+          <div class="value-item">
+            <a href="#" class="link">http://go.betacall.com/meet/{{ contact.firstName.charAt(0).toLowerCase() }}.{{
+              contact.lastName.toLowerCase() }}</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-label text-secondary">Phone</div>
+        <div class="info-value">
+          <div class="value-item">
+            <span>{{ contact.phoneNumber }}</span>
+            <span class="pill-primary">Primary</span>
+          </div>
+          <div class="value-item">
+            <span>621-770-7689</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-label text-secondary">Social</div>
+        <div class="info-value">
+          <div class="social-icons">
+            <button class="btn-icon round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+              </svg>
+            </button>
+            <button class="btn-icon round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12a10 10 0 1 1 10 10A10 10 0 0 1 2 12zm10 0a8 8 0 1 0 8 8 8 8 0 0 0-8-8z"></path>
+              </svg>
+            </button>
+            <button class="btn-icon round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+                </path>
+              </svg>
+            </button>
+            <button class="btn-icon round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                <rect x="2" y="9" width="4" height="12"></rect>
+                <circle cx="4" cy="4" r="2"></circle>
+              </svg>
+            </button>
+            <button class="btn-icon round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  } @else {
+  <div class="empty-state">
+    <div class="empty-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="1.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+      </svg>
+    </div>
+    <h3>Select a contact</h3>
+    <p>Choose a contact from the list to view their details.</p>
+  </div>
+  }
+</div>
