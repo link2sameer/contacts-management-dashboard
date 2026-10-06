@@ -3,9 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Contact, EmailAddress } from '../models/contact.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ContactService {
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:3000/contacts';

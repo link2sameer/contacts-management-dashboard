@@ -39,7 +39,6 @@ describe('ContactListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ContactListComponent, RouterTestingModule],
       providers: [
-        { provide: ContactService, useValue: mockContactService },
         provideMockStore({
           initialState: {
             contacts: {
@@ -51,7 +50,12 @@ describe('ContactListComponent', () => {
           }
         })
       ]
-    }).compileComponents();
+    });
+
+    TestBed.overrideComponent(ContactListComponent, {
+      set: { providers: [{ provide: ContactService, useValue: mockContactService }] }
+    });
+    await TestBed.compileComponents();
 
     fixture = TestBed.createComponent(ContactListComponent);
     component = fixture.componentInstance;
@@ -65,9 +69,12 @@ describe('ContactListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch load action when initialized', () => {
+  it('should request contacts and dispatch the result', () => {
     spyOn(store, 'dispatch');
-    component.ngOnInit();
+
+    component.getContacts();
+
+    expect(mockContactService.getContacts).toHaveBeenCalledWith('');
     expect(store.dispatch).toHaveBeenCalled();
   });
 

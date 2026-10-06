@@ -9,7 +9,8 @@ import { Contact, EmailAddress } from '../../../core/models/contact.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './contact-details.component.html',
-  styleUrl: './contact-details.component.scss'
+  styleUrl: './contact-details.component.scss',
+  providers: [ContactService]
 })
 export class ContactDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);

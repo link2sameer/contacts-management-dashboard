@@ -34,7 +34,6 @@ describe('ContactDetailsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ContactDetailsComponent, RouterTestingModule],
       providers: [
-        { provide: ContactService, useValue: mockContactService },
         { provide: Location, useValue: mockLocation },
         {
           provide: ActivatedRoute,
@@ -43,7 +42,12 @@ describe('ContactDetailsComponent', () => {
           }
         }
       ]
-    }).compileComponents();
+    });
+
+    TestBed.overrideComponent(ContactDetailsComponent, {
+      set: { providers: [{ provide: ContactService, useValue: mockContactService }] }
+    });
+    await TestBed.compileComponents();
 
     fixture = TestBed.createComponent(ContactDetailsComponent);
     component = fixture.componentInstance;

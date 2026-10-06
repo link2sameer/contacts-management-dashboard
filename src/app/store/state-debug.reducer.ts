@@ -16,7 +16,7 @@ export const initialStateDebugState: StateDebugState = {
 // Reducer: handles dispatched actions and returns new state without mutating the old state.
 export const stateDebugReducer = createReducer(
   initialStateDebugState,
-  on(incrementDebugCounter, (state) => ({ ...state, counter: state.counter + 1 })),
+  on(incrementDebugCounter, (state) => ({ ...state, counter: state.counter + 1, console: console.log('Incremented counter to', state.counter + 1) })),
   on(decrementDebugCounter, (state) => ({ ...state, counter: state.counter - 1 })),
   on(resetDebugCounter, () => initialStateDebugState)
 );

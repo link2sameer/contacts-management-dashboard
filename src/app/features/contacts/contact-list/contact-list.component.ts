@@ -2,27 +2,29 @@ import { Component, DestroyRef, HostListener, inject, OnInit } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, of, startWith, Subject, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { ContactService } from '../../../core/services/contact.service';
 import { Contact } from '../../../core/models/contact.model';
 import { AddEditContactComponent } from '../add-edit-contact/add-edit-contact.component';
 import { AppState } from '../../../store';
-import { loadContacts } from '../../../store/contacts.actions';
+import { loadContacts, loadContactsFailure, loadContactsSuccess } from '../../../store/contacts.actions';
 
 @Component({
   selector: 'app-contact-list',
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule, AddEditContactComponent],
   templateUrl: './contact-list.component.html',
-  styleUrl: './contact-list.component.scss'
+  styleUrl: './contact-list.component.scss',
+  providers: [ContactService]
 })
 export class ContactListComponent implements OnInit {
   private contactService = inject(ContactService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   private store = inject(Store<AppState>);
+  private searchTerms = new Subject<string>();
 
   searchControl = new FormControl('', { nonNullable: true });
   contacts: Contact[] = [];
@@ -56,13 +58,27 @@ export class ContactListComponent implements OnInit {
         distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((searchTerm) => {
-        this.store.dispatch(loadContacts({ searchTerm }));
-      });
+      .subscribe((searchTerm) => this.searchTerms.next(searchTerm));
+
+    this.searchTerms
+      .pipe(
+        tap((searchTerm) => this.store.dispatch(loadContacts({ searchTerm }))),
+        switchMap((searchTerm) =>
+          this.contactService.getContacts(searchTerm).pipe(
+            map((contacts) => loadContactsSuccess({ contacts })),
+            catchError((error: unknown) => {
+              console.error('Error loading contacts', error);
+              return of(loadContactsFailure({ error: 'Failed to load contacts.' }));
+            })
+          )
+        ),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((action) => this.store.dispatch(action));
   }
 
   getContacts(): void {
-    this.store.dispatch(loadContacts({ searchTerm: this.searchControl.value }));
+    this.searchTerms.next(this.searchControl.value);
   }
 
   toggleMenu(contactId: string, event: Event): void {
@@ -103,18 +119,10 @@ export class ContactListComponent implements OnInit {
     }
 
     this.contactService.deleteContact(contact.id).subscribe({
-      next: () => {
-        this.getContacts();
-        if (this.router.url.includes(`/contacts/${contact.id}`)) {
-          this.router.navigate(['/contacts']);
-        }
-      },
+      next: () => this.getContacts(),
       error: (err) => {
-        console.error('Error deleting contact on server, applying local deletion', err);
-        this.contacts = this.contacts.filter(c => c.id !== contact.id);
-        if (this.router.url.includes(`/contacts/${contact.id}`)) {
-          this.router.navigate(['/contacts']);
-        }
+        console.error('Error deleting contact', err);
+        this.errorMessage = 'Failed to delete contact.';
       }
     });
   }
@@ -127,5 +135,3 @@ export class ContactListComponent implements OnInit {
     this.router.navigate(['/contacts', id]);
   }
 }
-
-
