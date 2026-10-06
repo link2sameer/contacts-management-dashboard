@@ -1,0 +1,17 @@
+<section class="state-debug">
+  <header>
+    <p class="eyebrow">NgRx playground</p>
+    <h1>State Debug</h1>
+    <p class="description">Dispatch actions and watch the selected store value update.</p>
+  </header>
+
+  <div class="counter-panel" aria-live="polite">
+    <span class="counter-label">Counter state</span>
+    <output>{{ counter$ | async }}</output>
+    <div class="counter-actions">
+      <button type="button" (click)="decrement()" aria-label="Decrement counter">−</button>
+      <button type="button" (click)="increment()" aria-label="Increment counter">+</button>
+      <button type="button" class="reset" (click)="reset()">Reset</button>
+    </div>
+  </div>
+</section>

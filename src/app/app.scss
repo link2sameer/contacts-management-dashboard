@@ -94,6 +94,24 @@
     }
   }
 
+  .state-counter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+
+    strong {
+      min-width: 1ch;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
   .user-profile {
     display: flex;
     align-items: center;
@@ -132,6 +150,21 @@
 }
 
 @media (max-width: 768px) {
+  .top-header {
+    gap: 12px;
+    padding: 0 16px;
+
+    .search-bar {
+      width: auto;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .user-profile {
+      gap: 12px;
+    }
+  }
+
   .sidebar {
     display: none; // For simplicity in this demo, hide sidebar on mobile
   }

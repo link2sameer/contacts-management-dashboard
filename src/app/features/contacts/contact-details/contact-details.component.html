@@ -65,14 +65,9 @@
         <div class="info-label text-secondary">Email</div>
         <div class="info-value">
           <div class="value-item">
-            <span>{{ contact.firstName.toLowerCase() }}.{{ contact.lastName.toLowerCase() }}@gmail.com</span>
+            <span>{{ contact.email }}</span>
             <span class="pill-primary">Primary</span>
           </div>
-          @for (email of emails; track email?.id) {
-          <div class="value-item">
-            <span>{{ email?.email }}</span>
-          </div>
-          }
         </div>
       </div>
 

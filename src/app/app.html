@@ -19,6 +19,10 @@
         </svg>
         <span>Contacts</span>
       </a>
+      <a routerLink="/state-debug" routerLinkActive="active" class="nav-item">
+        <span aria-hidden="true">#</span>
+        <span>State Debug</span>
+      </a>
     </nav>
   </aside>
 
@@ -30,6 +34,10 @@
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
         <input type="text" placeholder="Search contacts..." disabled />
+      </div>
+      <div class="state-counter" aria-live="polite" aria-label="NgRx counter state">
+        <span>State</span>
+        <strong>{{ debugCounter$ | async }}</strong>
       </div>
       <div class="user-profile">
         <div class="notification-bell">

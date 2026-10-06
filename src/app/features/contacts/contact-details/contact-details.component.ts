@@ -17,7 +17,6 @@ export class ContactDetailsComponent implements OnInit {
   private location = inject(Location);
 
   contact: Contact | null = null;
-  emails: EmailAddress[] = [];
   loading: boolean = true;
 
   ngOnInit(): void {
@@ -34,23 +33,10 @@ export class ContactDetailsComponent implements OnInit {
     this.contactService.getContact(id).subscribe({
       next: (contactData) => {
         this.contact = contactData;
-        this.fetchEmails(id);
+        this.loading = false;
       },
       error: (err) => {
         console.error('Error fetching contact', err);
-        this.loading = false;
-      }
-    });
-  }
-
-  fetchEmails(id: string): void {
-    this.contactService.getContactEmails(id).subscribe({
-      next: (emailData) => {
-        this.emails = emailData;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error fetching emails', err);
         this.loading = false;
       }
     });

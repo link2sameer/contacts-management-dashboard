@@ -44,7 +44,38 @@
 
     .header-actions {
       display: flex;
+      align-items: center;
       gap: 8px;
+
+      .btn-add-contact {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: var(--primary-color, #2563eb);
+        color: #ffffff;
+        border: none;
+        border-radius: var(--border-radius-sm, 6px);
+        padding: 7px 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+        &:hover {
+          background-color: #1d4ed8;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.25);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        svg {
+          flex-shrink: 0;
+        }
+      }
     }
   }
 }
@@ -83,12 +114,32 @@
       font-size: 1rem;
       font-weight: 600;
       color: var(--text-primary);
-      padding-right: 32px;
+      padding-right: 56px;
       outline: none;
 
       &::placeholder {
         color: var(--text-primary);
         font-weight: 600;
+      }
+    }
+
+    .clear-search-btn {
+      position: absolute;
+      right: 28px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #e2e8f0;
+        color: var(--text-primary);
       }
     }
 
@@ -178,6 +229,7 @@
   .contact-actions {
     display: flex;
     gap: 8px;
+    align-items: center;
 
     .action-btn {
       width: 32px;
@@ -189,10 +241,65 @@
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
+      border: none;
+      cursor: pointer;
 
-      &:hover {
+      &:hover, &.active {
         background-color: #e2e8f0;
         color: var(--primary-color);
+      }
+    }
+
+    .action-menu-wrapper {
+      position: relative;
+      display: inline-flex;
+
+      .dropdown-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        padding: 6px;
+        min-width: 130px;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        animation: fadeIn 0.15s ease-out;
+
+        .dropdown-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 12px;
+          border: none;
+          background: transparent;
+          width: 100%;
+          border-radius: 6px;
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: var(--text-primary);
+          cursor: pointer;
+          transition: background-color 0.15s, color 0.15s;
+          text-align: left;
+
+          &:hover {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+          }
+
+          &.delete {
+            color: #ef4444;
+
+            &:hover {
+              background-color: #fef2f2;
+              color: #dc2626;
+            }
+          }
+        }
       }
     }
   }
@@ -221,6 +328,16 @@
   to { transform: rotate(360deg); }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 @media (max-width: 768px) {
   .split-pane-layout {
     flex-direction: column;
@@ -231,17 +348,16 @@
   .master-pane {
     width: 100%;
     height: auto;
-    min-height: 400px; // Ensure there's some space for the list on mobile before scrolling details
+    min-height: 400px;
     border-right: none;
     border-bottom: 1px solid var(--border-color);
   }
   
   .detail-pane {
-    flex: none; // let it take natural height on mobile
+    flex: none;
   }
 
   .contact-row .contact-actions {
-    display: none; // Hide extra buttons on small screens to save space, or reduce their number
+    display: none;
   }
 }
-

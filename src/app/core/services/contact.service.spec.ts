@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ContactService } from './contact.service';
 import { Contact, EmailAddress } from '../models/contact.model';
 
@@ -12,19 +13,23 @@ describe('ContactService', () => {
       id: '1',
       firstName: 'Alice',
       lastName: 'Smith',
-      avatar: '',
-      address: '123 Lane',
-      company: 'Tech',
-      jobTitle: 'Dev',
-      phoneNumber: '1234',
+      email: 'alice.smith@techcorp.com',
+      avatar: 'https://i.pravatar.cc/150?u=alice',
+      address: '123 Tech Lane, San Francisco, CA',
+      company: 'TechCorp',
+      jobTitle: 'Software Engineer',
+      phoneNumber: '+1-555-0100',
       status: 'Active'
     }
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ContactService]
+      providers: [
+        ContactService,
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     });
     service = TestBed.inject(ContactService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -44,7 +49,20 @@ describe('ContactService', () => {
       expect(contacts).toEqual(mockContacts);
     });
 
-    const req = httpMock.expectOne('https://mockapi.io/api/v1/contacts');
+    const req = httpMock.expectOne('http://localhost:3000/contacts');
+    expect(req.request.method).toBe('GET');
+    req.flush(mockContacts);
+  });
+
+  it('should fetch contacts with search parameter', () => {
+    service.getContacts('Alice').subscribe(contacts => {
+      expect(contacts.length).toBe(1);
+      expect(contacts).toEqual(mockContacts);
+    });
+
+    const req = httpMock.expectOne(
+      request => request.url === 'http://localhost:3000/contacts' && request.params.get('search') === 'Alice'
+    );
     expect(req.request.method).toBe('GET');
     req.flush(mockContacts);
   });
@@ -54,9 +72,57 @@ describe('ContactService', () => {
       expect(contact).toEqual(mockContacts[0]);
     });
 
-    const req = httpMock.expectOne('https://mockapi.io/api/v1/contacts/1');
+    const req = httpMock.expectOne('http://localhost:3000/contacts/1');
     expect(req.request.method).toBe('GET');
     req.flush(mockContacts[0]);
+  });
+
+  it('should delete a contact by id', () => {
+    service.deleteContact('1').subscribe();
+
+    const req = httpMock.expectOne('http://localhost:3000/contacts/1');
+    expect(req.request.method).toBe('DELETE');
+    req.flush({});
+  });
+
+  it('should create a new contact', () => {
+    const newContact: Partial<Contact> = {
+      firstName: 'Bob',
+      lastName: 'Jones',
+      email: 'bob@test.com'
+    };
+    const createdContact: Contact = {
+      id: '2',
+      firstName: 'Bob',
+      lastName: 'Jones',
+      email: 'bob@test.com',
+      avatar: '',
+      address: '',
+      company: '',
+      jobTitle: '',
+      phoneNumber: '',
+      status: 'Active'
+    };
+
+    service.createContact(newContact).subscribe(res => {
+      expect(res).toEqual(createdContact);
+    });
+
+    const req = httpMock.expectOne('http://localhost:3000/contacts');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(newContact);
+    req.flush(createdContact);
+  });
+
+  it('should update a contact by id', () => {
+    const updatedData = { ...mockContacts[0], firstName: 'Alicia' };
+    service.updateContact('1', updatedData).subscribe(res => {
+      expect(res).toEqual(updatedData);
+    });
+
+    const req = httpMock.expectOne('http://localhost:3000/contacts/1');
+    expect(req.request.method).toBe('PUT');
+    req.flush(updatedData);
   });
 
   it('should fetch contact emails', () => {
@@ -67,7 +133,7 @@ describe('ContactService', () => {
       expect(emails).toEqual(mockEmails);
     });
 
-    const req = httpMock.expectOne('https://mockapi.io/api/v1/contacts/1/email_addresses');
+    const req = httpMock.expectOne('http://localhost:3000/contacts/1/email_addresses');
     expect(req.request.method).toBe('GET');
     req.flush(mockEmails);
   });

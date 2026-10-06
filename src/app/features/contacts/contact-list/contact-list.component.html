@@ -4,7 +4,8 @@
       <div class="header-top">
         <div class="title-group">
           <button class="btn-icon header-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <line x1="3" y1="12" x2="21" y2="12"></line>
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -13,24 +14,56 @@
           <h2>Contacts</h2>
         </div>
         <div class="header-actions">
+          <button class="btn-add-contact" (click)="openAddContact()" type="button" title="Add Contact">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Add Contact</span>
+          </button>
           <button class="btn-icon header-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </button>
           <button class="btn-icon header-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </button>
         </div>
       </div>
-      
+
       <div class="search-section">
+        <div class="ngrx-debug-panel" style="margin-bottom: 12px; border: 1px solid #dfe7f1; background: #f5f9ff; border-radius: 10px; padding: 10px 12px; font-size: 12px; color: #32506d;">
+          <strong>NgRx state test:</strong>
+          Status: {{ loading ? 'Loading' : 'Loaded' }} | 
+          Search: {{ searchControl.value || 'All contacts' }} | 
+          Count: {{ contacts.length }} | 
+          Error: {{ errorMessage || 'None' }}
+        </div>
         <span class="search-label text-secondary text-sm">Search for a contact</span>
         <div class="search-input-wrapper">
-          <input type="text" placeholder="Name, email or phone number" class="search-input" />
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+          <input
+            type="text"
+            [formControl]="searchControl"
+            placeholder="Name, email or phone number"
+            class="search-input"
+          />
+          @if (searchControl.value) {
+          <button class="clear-search-btn" (click)="clearSearch()" type="button" aria-label="Clear search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          }
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="search-icon">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
@@ -40,49 +73,88 @@
 
     <div class="contact-list">
       @if (loading) {
-        <div class="loading-state">
-          <div class="spinner"></div>
-          <p>Loading contacts...</p>
-        </div>
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading contacts...</p>
+      </div>
+      } @else if (errorMessage) {
+      <div class="empty-state">
+        <p class="text-danger">{{ errorMessage }}</p>
+      </div>
       } @else if (contacts.length > 0) {
-        @for (contact of contacts; track contact?.id) {
-          <div class="contact-row" (click)="viewDetails(contact?.id!)" routerLinkActive="active" [routerLink]="['/contacts', contact?.id]">
-            <div class="contact-info">
-              <div class="avatar-wrapper">
-                <img [src]="contact?.avatar" [alt]="contact?.firstName" class="avatar" />
-                <span class="status-indicator" [ngClass]="contact?.status?.toLowerCase()"></span>
-              </div>
-              <div class="contact-details-text">
-                <span class="name">{{ contact?.firstName }} {{ contact?.lastName }}</span>
-                <span class="role text-secondary">{{ contact?.jobTitle }}</span>
-              </div>
-            </div>
-            
-            <div class="contact-actions">
-              <button class="action-btn" (click)="$event.stopPropagation()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-              </button>
-              <button class="action-btn" (click)="$event.stopPropagation()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
-              </button>
-              <button class="action-btn" (click)="$event.stopPropagation()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="1"></circle>
-                  <circle cx="19" cy="12" r="1"></circle>
-                  <circle cx="5" cy="12" r="1"></circle>
-                </svg>
-              </button>
-            </div>
+      @for (contact of contacts; track contact?.id) {
+      <div class="contact-row" (click)="viewDetails(contact?.id!)" routerLinkActive="active">
+        <div class="contact-info">
+          <div class="avatar-wrapper">
+            <img [src]="contact?.avatar" [alt]="contact?.firstName" class="avatar" />
+            <span class="status-indicator" [ngClass]="contact?.status?.toLowerCase()"></span>
           </div>
-        }
-      } @else {
-        <div class="empty-state">
-          <p>No contacts found.</p>
+          <div class="contact-details-text">
+            <span class="name">{{ contact?.firstName }} {{ contact?.lastName }}</span>
+            <span class="role text-secondary">{{ contact?.jobTitle }}</span>
+          </div>
         </div>
+
+        <div class="contact-actions">
+          <button class="action-btn" (click)="$event.stopPropagation()" title="Message">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </button>
+          <button class="action-btn" (click)="$event.stopPropagation()" title="Call">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+              </path>
+            </svg>
+          </button>
+
+          <div class="action-menu-wrapper">
+            <button
+              class="action-btn"
+              [class.active]="activeMenuContactId === contact?.id"
+              (click)="toggleMenu(contact?.id!, $event)"
+              title="Options">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="19" cy="12" r="1"></circle>
+                <circle cx="5" cy="12" r="1"></circle>
+              </svg>
+            </button>
+
+            @if (activeMenuContactId === contact?.id) {
+            <div class="dropdown-menu" (click)="$event.stopPropagation()">
+              <button class="dropdown-item" (click)="openUpdateModal(contact, $event)" type="button">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span>Update</span>
+              </button>
+              <button class="dropdown-item delete" (click)="deleteContact(contact, $event)" type="button">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                <span>Delete</span>
+              </button>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+      }
+      } @else {
+      <div class="empty-state">
+        <p>No contacts found.</p>
+      </div>
       }
     </div>
   </div>
@@ -91,3 +163,10 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+
+<app-add-edit-contact
+  [isOpen]="isAddEditModalOpen"
+  [contact]="selectedContactForEdit"
+  (saved)="onContactSaved($event)"
+  (closed)="closeAddEditModal()"
+></app-add-edit-contact>

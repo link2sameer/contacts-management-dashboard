@@ -13,5 +13,6 @@ export interface Contact {
   company: string;
   jobTitle: string;
   phoneNumber: string;
+  email: string;
   status: 'Active' | 'Inactive';
 }

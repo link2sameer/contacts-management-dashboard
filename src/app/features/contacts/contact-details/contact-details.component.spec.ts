@@ -17,6 +17,7 @@ describe('ContactDetailsComponent', () => {
     id: '1',
     firstName: 'Alice',
     lastName: 'Smith',
+    email: 'alice.smith@techcorp.com',
     avatar: 'avatar.jpg',
     address: '123 Lane',
     company: 'TechCorp',
@@ -25,14 +26,9 @@ describe('ContactDetailsComponent', () => {
     status: 'Active'
   };
 
-  const mockEmails: EmailAddress[] = [
-    { id: 'e1', email: 'alice@test.com', type: 'Work' }
-  ];
-
   beforeEach(async () => {
-    mockContactService = jasmine.createSpyObj('ContactService', ['getContact', 'getContactEmails']);
+    mockContactService = jasmine.createSpyObj('ContactService', ['getContact']);
     mockContactService.getContact.and.returnValue(of(mockContact));
-    mockContactService.getContactEmails.and.returnValue(of(mockEmails));
     mockLocation = jasmine.createSpyObj('Location', ['back']);
 
     await TestBed.configureTestingModule({
@@ -58,11 +54,9 @@ describe('ContactDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch contact and emails on init', () => {
+  it('should fetch contact on init', () => {
     expect(mockContactService.getContact).toHaveBeenCalledWith('1');
-    expect(mockContactService.getContactEmails).toHaveBeenCalledWith('1');
     expect(component.contact).toEqual(mockContact);
-    expect(component.emails).toEqual(mockEmails);
     expect(component.loading).toBeFalse();
   });
 
